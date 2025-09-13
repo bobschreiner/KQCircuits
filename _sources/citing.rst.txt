@@ -1,3 +1,5 @@
+.. _authors:
+
 Citing
 ======
 
@@ -13,16 +15,27 @@ If no reference to a specific version is needed,
 the following ``.bib`` file can be used::
 
    @software{kqcircuits,
-     author       = {Heinsoo, Johannes and
+     author       = {Cucurachi, Daniele and
+                     Das, Soumya Ranjan and
+                     Giri, Rakshyakar and
+                     Gusenkova, Daria and
+                     Guthrie, Andrew and
+                     Heinsoo, Johannes and
                      Inel, Sinan and
-                     Janzso, David and
+                     Janzsó, Dávid and
                      Jenei, Máté and
+                     Juliusson, Kristinn and
                      Kotilahti, Janne and
                      Landra, Alessandro and
+                     Moretti, Roberto and
+                     Mylläri, Tuomas and
                      Ockeloen-Korppi, Caspar and
                      Räbinä, Jukka and
-                     Savola, Niko},
-     title        = {KQCircuits},
+                     Savola, Niko and
+                     Smirnov, Pavel and
+                     Takala, Eelis and
+                     Wubben, Leon},
+     title        = {{KQCircuits}},
      month        = jun,
      year         = 2021,
      publisher    = {Zenodo},

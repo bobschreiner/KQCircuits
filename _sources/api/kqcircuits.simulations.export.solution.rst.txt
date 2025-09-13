@@ -1,0 +1,12 @@
+:github_url: hide
+
+kqcircuits.simulations.export.solution
+======================================
+
+.. automodule:: kqcircuits.simulations.export.solution
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.simulations.export.solution
+.. image:: ../pcell_images/kqcircuits.simulations.export.solution.png

@@ -1,13 +1,16 @@
+:github_url: hide
+
 API documentation
 =================
 .. toctree::
 
    kqcircuits.chips
    kqcircuits.elements
+   kqcircuits.junctions
+   kqcircuits.layer_config
    kqcircuits.masks
    kqcircuits.qubits
    kqcircuits.simulations
-   kqcircuits.squids
    kqcircuits.test_structures
    kqcircuits.util
 
@@ -18,6 +21,7 @@ API documentation
    kqcircuits.klayout_view
    kqcircuits.layer_cluster
    kqcircuits.pya_resolver
+   kqcircuits.run
 
 Module contents
 ---------------

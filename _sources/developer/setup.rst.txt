@@ -1,28 +1,29 @@
 .. _developer_setup:
 
-Developer Setup
-===============
+Developer GUI Setup
+===================
 
 Prerequisites
 -------------
 
 First install :ref:`klayout`.
 
-Developer setup may be done independently from the GUI based installation of the KQCircuits Salt
-package. But you should not do both without removing the other one. Otherwise there will be
-duplicate macros and possibly other problems.
+If using existing KLayout installation which has KQCircuits Salt package installed, we recommend
+to remove such package from the Salt package manager. Two concurrent GUI setups may lead to many
+problems such as duplicate macros etc.
 
 Python
 ^^^^^^
 
-KQCircuits installation requires Python 3, which should be already installed on Linux. On Windows
-you may have to install it. If your Python installation does not already contain the ``pip`` package
+KQCircuits installation requires Python 3.10 minimum. This should already come pre-packaged at least
+with Ubuntu 22.04. On Windows platforms Python needs to be installed manually.
+If your Python installation does not already contain the ``pip`` package
 manager, you have to also install that.
 
 Successfully tested versions:
 
-- Ubuntu 18.04 and 20.04 LTS with Python 3.6.9 and Python 3.8.5
-- Windows: Python 3.7.6, 3.8.5
+- Ubuntu 22.04 LTS with Python 3.10.14
+- Windows: Python 3.11.2
 
 Sources
 -------
@@ -33,22 +34,14 @@ Get KQCircuits' sources with:
 
     git clone |GIT_CLONE_URL|
 
-Alternatively, you may re-use the Salt package itself for quick tests, it is under the
-``.klayout/salt/KQCircuits`` directory. In this case creating symbolic links or installing some
-dependencies may not be required. Beware, a Salt package update **will overwrite your code** in this
-directory without any warning!
-
 Install
 -------
 
 This section explains basic installation, where the required packages
 are automatically installed in the default locations where KLayout looks for
-them. If you want to have more control over the installation process, see the
-next section.
+them. If you want to have more control over the installation process, see section :ref:`manual_installation`.
 
-Open a command line / terminal and ``cd`` to your KQCircuits folder.
-**In Windows you must open the terminal with administrator privileges**.
-Then write::
+Open a command line / terminal and ``cd`` to your KQCircuits folder. Then write::
 
     python3 setup_within_klayout.py
 
@@ -69,6 +62,31 @@ libpython*.dll on Windows.
    problem with the specific KLayout version/build you are using, see
    :ref:`installation_issues` section for possible solutions.
 
+Unlinking
+---------
+
+Installation command links your KQCircuits installation with your KLayout
+installation automatically. If you wish to unlink, then write in your terminal::
+
+    python3 setup_within_klayout.py --unlink
+
+Update
+------
+
+Updating an existing KQCircuits GUI setup is easy. After updating KQCircuits code itself with ``git
+pull`` just run :git_url:`setup_within_klayout.py` again. This will take care of upgrading (or downgrading)
+KQCircuits' Python dependencies and installing new ones, as needed. Alternatively, KQCircuits dependencies
+can be installed by launching KLayout and accepting the window that asks to update dependencies.
+This usually requires a KLayout restart afterwards.
+
+The list of dependencies of KQCircuits as KLayout GUI plugin are maintained in ``gui-requirements.txt``
+files present in the :git_url:`klayout_packages/python/requirements` folder. These files may evolve
+as KQCircuits code evolves.
+
+.. note::
+    If a new version of KQCircuits has stopped using a certain Python dependency that will **not**
+    be removed automatically. The user has to remove that manually if it causes any problem.
+
 Secondary install
 -----------------
 
@@ -80,62 +98,54 @@ out KQCircuits under some different name::
 
     git clone https://github.com/iqm-finland/KQCircuits KQC_2nd
 
-KLayout needs to know about this secondary environment, run it with ``startkl.py`` or by manualy
-setting the environment variable ``KLAYOUT_HOME``::
+KLayout needs to know about this secondary environment, for example:
 
     KLAYOUT_HOME=~/.klayout_alt/KQC_2nd klayout
 
 Remember to set up a new ``venv`` before attempting :ref:`standalone` in this directory. Otherwise
 your secondary environment may get mixed up with the primary one.
 
+.. _manual_installation:
+
 Manual installation
 -------------------
 
 To use KQCircuits in KLayout Editor, symlinks must be created from KLayout's
-python folder to your KQCircuits folder. Some Python packages must also be
+python folder to your KQCircuits folder. Some Python packages (dependencies) must also be
 installed for KQCircuits to work. The details of these steps for different
 operating systems are explained in the following subsections. The script
-``setup_within_klayout.py`` used in the previous section attempts to
+:git_url:`setup_within_klayout.py` used in the previous section attempts to
 automatically do the same steps as explained below.
 
-Linux or MacOS
-^^^^^^^^^^^^^^
+Symlinks in Linux or MacOS
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Create a symlink from KLayout to the kqcircuits package and scripts::
 
     ln -s /Path_to_KQCircuits/klayout_package/python/kqcircuits ~/.klayout/python/kqcircuits
     ln -s /Path_to_KQCircuits/klayout_package/python/scripts ~/.klayout/python/kqcircuits_scripts
+    ln -s /Path_to_KQCircuits/klayout_package/python/requirements ~/.klayout/python/kqcircuits_requirements
 
-To install the required packages, open a terminal in your KQCircuits folder
-(which contains ``requirements_within_klayout_unix.txt``), and write::
-
-    pip3 install -r requirements_within_klayout_unix.txt
-
-The previous command installs the packages to your system's default Python
-environment, because that is where KLayout looks for the packages on Linux.
-If you want to install the packages in a separate environment instead, you
-have to create a symlink to there.
-
-Windows
-^^^^^^^
+Symlinks in Windows
+^^^^^^^^^^^^^^^^^^^
 
 Create a symlink from KLayout to kqcircuits by opening a command prompt with
 administrator privileges, and do::
 
-    cd %HOMEPATH%\KLayout\klayout_package\python
-    mklink /D 'kqcircuits' "Path_to_KQCircuits\klayout_package\python\kqcircuits"
-    mklink /D 'kqcircuits_scripts' "Path_to_KQCircuits\klayout_package\python\scripts"
+    cd %HOMEPATH%\KLayout\python
+    mklink /D kqcircuits "Path_to_KQCircuits\klayout_package\python\kqcircuits"
+    mklink /D kqcircuits_scripts "Path_to_KQCircuits\klayout_package\python\scripts"
+    mklink /D kqcircuits_requirements "Path_to_KQCircuits\klayout_package\python\requirements"
 
-Install the required packages by opening command prompt in your KQCircuits
-folder (which contains ``requirements_within_klayout_windows.txt``), and writing::
+(In PowerShell replace the first line by ``cd ~\KLayout\python``)
 
-    pip install -r requirements_within_klayout_windows.txt --target=%HOMEPATH%\AppData\Roaming\KLayout\lib\python3.7\site-packages
+Installing dependencies
+^^^^^^^^^^^^^^^^^^^^^^^
 
-The previous command installs the packages to KLayout's embedded Python
-environment, which is where KLayout looks for packages on Windows. If you
-want to install the packages in another environment instead, you have to
-create a symlink to there.
-
-Some packages, like numpy, must be compiled on the same compiler as the
-embedded Python in KLayout. Since KLayout 0.26.2, a correct version of numpy
-is already included with KLayout, so this shouldn't be a problem.
+Usually launching KLayout after setting up symlinks will install dependencies for you,
+just click Yes on the prompt and maybe restart KLayout again for changes to take effect.
+If this won't help, please refer to :ref:`manual_installation_of_klayout_packages`.
+Instead of installing each package individually, try installing them in bulk,
+by replacing the ``<PACKAGE>==<VERSION>`` part of the ``pip`` command with
+``-r klayout_package/python/requirements/<OS>/gui-requirements.txt``, ``<OS>``
+being either ``win``, ``mac`` or ``linux``.

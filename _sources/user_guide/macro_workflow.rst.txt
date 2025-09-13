@@ -1,5 +1,7 @@
-Macro development
-=================
+.. _macro_workflow:
+
+Macro and script development
+============================
 
 KLayout macros are Python scripts which can be run inside KLayout Editor.
 They can be used, for example, to create or modify elements in the layout,
@@ -10,19 +12,77 @@ KLayout documentation about `macro development
 , and the `KLayout API documentation
 <https://www.klayout.de/doc-qt5/code/index.html>`__.
 
-Basic workflow
---------------
+Stand-alone python scripts can also be used to generate and export geometry if KQCircuits is installed as a python
+library. See :ref:`standalone` for details.
+
+Running the first example
+-------------------------
+
+To get started, follow the steps below to run a demo macro. The comments in the macro explain what is going on step by
+step.
 
 #. Open the KLayout application
 #. From the top menu, choose "Macros" and "Macro Development", or press F5.
 #. Select "Python"
 #. Open "[Local - python branch]", where you should see the "kqcircuits scripts"
    directory
-#. Open ``kqcircuits scripts/macros/generate/demo_placing_a_pcell``
+#. Open :git_url:`kqcircuits_scripts/macros/generate/demo_placing_a_pcell.lym <klayout_package/python/scripts/macros/generate/demo_placing_a_pcell.lym>`
+#. Make sure debugging mode is off (bug icon is not pressed in)
 #. Click on the green play symbol with the exclamation mark ("Run script
    from the current tab"), or use Shift+F5.
 #. A chip cell should appear in the main KLayout window.
 
+Interacting with the KLayout application
+----------------------------------------
+KLayout organizes layouts in *Panels*, which show as tabs in the application if more than one panel is open.
+In code, the panel is represented by a ``LayoutView`` object. Inside each panel there can be one or more
+layouts loaded, for example with the *File*, *Open in Same Panel* command. Each layout is represented by a
+``CellView`` object and a ``Layout`` object. The ``Layout`` contains all the actual cells, layers and shapes.
+
+As shown by the above, to work with the KLayout display in macro code we need access to at least three objects.
+To help in managing this, KQCircuits provides the class :class:`.KLayoutView`.
+
+Creating a new panel
+^^^^^^^^^^^^^^^^^^^^
+Often, in a macro you want to start with a new layout in a new panel, which can be created as follows::
+
+    from kqcircuits.klayout_view import KLayoutView
+    view = KLayoutView()
+
+This code creates a panel, cell view and layout, and initializes these with the layers used by KQCircuits.
+
+Accessing the currently active panel
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+In some macros you may want to interact with the layout that is currently visible. In this case, use::
+
+    from kqcircuits.klayout_view import KLayoutView
+    view = KLayoutView(current=True)
+
+Using ``KLayoutView``
+^^^^^^^^^^^^^^^^^^^^^
+Once created, :class:`.KLayoutView` exposes methods for the most common tasks to do with a layout:
+
+- ``insert_cell`` places KQCircuits elements into the top cell, similar to ``Element.insert_cell``.
+- ``focus`` makes sure a particular cell or the entire layout is visible (zoom to fit and show all hierarchy levels).
+- ``show`` shows the panel associated with this object, in case there are multiple panels open
+- ``export_pcell_png`` exports an image of a cell to a file
+
+See the :class:`.KLayoutView` API documentation for all methods and their usage.
+
+If more advanced interaction with KLayout is needed, the KLayout API objects are exposed as properties. See the
+corresponding KLayout API documentation linked below for their usage details:
+
+- ``layout_view``: The `LayoutView <https://www.klayout.de/doc-qt5/code/class_LayoutView.html>`__ instance, which refers
+  to a panel in the KLayout GUI.
+- ``cell_view``: The `CellView <https://www.klayout.de/doc-qt5/code/class_CellView.html>`__ instance. In case a
+  panel has multiple cell views (for example when multiple files are opened in the same panel), this returns the
+  currently active one.
+- ``layout``: The `Layout <https://www.klayout.de/doc-qt5/code/class_Layout.html>`__ object is the main container for
+  cells, layers and geometry
+- ``top_cell``: A reference to the first top `Cell <https://www.klayout.de/doc-qt5/code/class_Cell.html>`__ of the layout. This is the very first cell shown in the cell window.
+  Usually we place elements in this cell.
+- ``active_cell``: A reference to the currently active cell. This is the cell which is shown in bold in the cell
+  window, and can be changed in KLayout by right-clicking a cell and choosing *Show As New Top*.
 
 Debugger
 --------
@@ -70,21 +130,21 @@ Reloading libraries
 
 - Even though you have changed some line inside a PCell file, if
   nothing changes on the generated design inside the editor, you have to re-run
-  the ``reload.lym`` file to be able to reload the library features for
+  the :git_url:`reload.lym <klayout_package/python/scripts/macros/reload.lym>` file to be able to reload the library features for
   changes to be updated. The reload macro can also be run from
-  "Edit -> KQCircuits Library -> Reload libraries" in the main KLayout window
+  "KQCircuits -> Reload libraries" in the main KLayout window
 
 - The libraries are automatically reloaded whenever you restart KLayout, so
-  in that case there is no need to run the ``reload`` macro to see changes.
+  in that case there is no need to run the :git_url:`reload <klayout_package/python/scripts/macros/reload.lym>` macro to see changes.
 
 Examples
 --------
 
-- Locate the ``demo_placing_a_pcell`` and ``demo_pya_basic`` tutorials
-  under ``kqcircuits/macros/generate`` directory. Use the tutorials to
-  have basic understanding about KLayout Editor and macro generation
-  concept.
+- Locate the :git_url:`demo_placing_a_pcell <klayout_package/python/scripts/macros/generate/demo_placing_a_pcell.lym>`
+  and :git_url:`demo_pya_basic <klayout_package/python/scripts/macros/generate/demo_pya_basics.lym>` tutorials under
+  :git_url:`klayout_package/python/scripts/macros/generate` directory. Use the tutorials to have basic understanding
+  about KLayout Editor and macro generation concept.
 
-- Some other macros, such as ``test_waveguide_composite`` and
-  ``test_wgc_airbridge``, can be useful to learn more about specific KQC
+- Some other macros, such as :git_url:`test_waveguide_composite <klayout_package/python/scripts/macros/generate/test_waveguide_composite.lym>` and
+  :git_url:`test_wgc_airbridge <klayout_package/python/scripts/macros/generate/test_wgc_airbridge.lym>`, can be useful to learn more about specific KQC
   elements.

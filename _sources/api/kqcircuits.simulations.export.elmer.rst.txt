@@ -1,3 +1,5 @@
+:github_url: hide
+
 kqcircuits.simulations.export.elmer
 ===================================
 
@@ -5,3 +7,13 @@ kqcircuits.simulations.export.elmer
 .. toctree::
 
    kqcircuits.simulations.export.elmer.elmer_export
+   kqcircuits.simulations.export.elmer.elmer_solution
+   kqcircuits.simulations.export.elmer.mesh_size_helpers
+
+Module contents
+---------------
+
+.. automodule:: kqcircuits.simulations.export.elmer
+   :members:
+   :undoc-members:
+   :show-inheritance:

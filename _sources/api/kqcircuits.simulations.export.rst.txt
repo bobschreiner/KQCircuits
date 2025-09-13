@@ -1,15 +1,30 @@
+:github_url: hide
+
 kqcircuits.simulations.export
 =============================
 
 .. toctree::
 
    kqcircuits.simulations.export.ansys
+   kqcircuits.simulations.export.cross_section
    kqcircuits.simulations.export.elmer
    kqcircuits.simulations.export.sonnet
 
 
 .. toctree::
 
-   kqcircuits.simulations.export.gmsh_helpers
+   kqcircuits.simulations.export.export_and_run
+   kqcircuits.simulations.export.export_singularity
+   kqcircuits.simulations.export.remote_export_and_run
    kqcircuits.simulations.export.simulation_export
+   kqcircuits.simulations.export.simulation_validate
+   kqcircuits.simulations.export.solution
    kqcircuits.simulations.export.util
+
+Module contents
+---------------
+
+.. automodule:: kqcircuits.simulations.export
+   :members:
+   :undoc-members:
+   :show-inheritance:
